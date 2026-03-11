@@ -1,91 +1,71 @@
+// Trevor Romano - cis150 lab 7
 #include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <string>
+#include <vector>
 #include <cctype>
 
 using namespace std;
 
-// Prints the smoothie shop header and table headings.
-void printHeader();
+string toLowerWord(string text) {
+    for (int i = 0; i < (int)text.length(); i++) {
+        text[i] = tolower(text[i]);
+    }
+    return text;
+}
 
-// Converts text to uppercase and returns the converted string.
-string toUpperCase(const string &text);
+int findFlavor(const vector<string>& flavors, const string& flavor) {
+    for (int i = 0; i < (int)flavors.size(); i++) {
+        if (flavors[i] == flavor) {
+            return i;
+        }
+    }
+    return -1;
+}
 
-// Returns index of word in wordVec or -1 if word is not found in wordVec.
-int search(vector<string> &wordVec, string word);
+void printResults(const vector<string>& flavors, const vector<int>& votes) {
+    cout << "--- smoothie shop ---" << endl;
+    cout << "vote results" << endl;
+    cout << left << setw(14) << "flavor" << "votes" << endl;
+    cout << left << setw(14) << "------" << "-----" << endl;
 
-// Displays the word frequency information.
-void display(vector<string> &wordVec, vector<int> &freqVec);
+    for (int i = 0; i < (int)flavors.size(); i++) {
+        cout << left << setw(14) << flavors[i] << votes[i] << endl;
+    }
+}
 
 int main() {
-    vector<string> flavorVec;
-    vector<int> voteVec;
-
+    vector<string> flavors;
+    vector<int> votes;
     string line;
     bool done = false;
 
     while (!done) {
-        cout << "Enter Smoothie flavor(s) to vote for:" << endl;
+        cout << "enter smoothie flavor(s), type x to exit:" << endl;
         getline(cin, line);
 
         stringstream input(line);
         string flavor;
 
         while (input >> flavor) {
-            flavor = toUpperCase(flavor);
+            flavor = toLowerWord(flavor);
 
-            if (flavor == "GOBLUE") {
+            if (flavor == "x") {
                 done = true;
                 break;
             }
 
-            int foundIndex = search(flavorVec, flavor);
-            if (foundIndex >= 0) {
-                voteVec[foundIndex]++;
+            int index = findFlavor(flavors, flavor);
+            if (index >= 0) {
+                votes[index] = votes[index] + 1;
             } else {
-                flavorVec.push_back(flavor);
-                voteVec.push_back(1);
+                flavors.push_back(flavor);
+                votes.push_back(1);
             }
         }
     }
 
-    display(flavorVec, voteVec);
-
+    printResults(flavors, votes);
     return 0;
-}
-
-void printHeader() {
-    cout << "--- Rich's Smoothie Shop ---" << endl;
-    cout << "Flavor Voting Results" << endl;
-    cout << left << setw(14) << "Flavor" << "Votes" << endl;
-    cout << left << setw(14) << "--------" << "------" << endl;
-}
-
-string toUpperCase(const string &text) {
-    string upperText = text;
-
-    for (size_t i = 0; i < upperText.length(); i++) {
-        upperText[i] = static_cast<char>(toupper(static_cast<unsigned char>(upperText[i])));
-    }
-
-    return upperText;
-}
-
-int search(vector<string> &wordVec, string word) {
-    for (size_t i = 0; i < wordVec.size(); i++) {
-        if (wordVec[i] == word) {
-            return static_cast<int>(i);
-        }
-    }
-    return -1;
-}
-
-void display(vector<string> &wordVec, vector<int> &freqVec) {
-    printHeader();
-
-    for (size_t i = 0; i < wordVec.size(); i++) {
-        cout << left << setw(14) << wordVec[i] << freqVec[i] << endl;
-    }
 }
