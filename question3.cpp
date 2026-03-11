@@ -1,65 +1,72 @@
-// Trevor Romano - cis150 lab 7
 #include <iostream>
 #include <iomanip>
 #include <string>
 
 using namespace std;
 
-void printHeading() {
-    cout << "--- smoothie shop ---" << endl;
-}
+// Function prototypes
+void printHeading();
+int displayAndSelect(string flavorArr[], double priceArr[], int size);
+double printReceipt(string flavor, double price, double stateTax, double cityTax);
 
-int getSelection(const string flavors[], const double prices[], int size) {
-    cout << fixed << setprecision(2);
-    cout << "smoothie menu" << endl;
+int main() {
+    const int menu_size = 4;
+    string flavorArr[menu_size] = {"Chocolate", "Strawberry", "Protein", "Peach"};
+    double priceArr[menu_size] = {5.45, 6.99, 8.89, 7.45};
 
-    for (int i = 0; i < size; i++) {
-        cout << (i + 1) << ". " << left << setw(12) << flavors[i]
-             << "$" << right << setw(5) << prices[i] << endl;
-    }
+    printHeading();
 
-    int choice = 0;
-    while (choice < 1 || choice > size) {
-        cout << "enter menu number (1-" << size << "):" << endl;
-        cin >> choice;
-        if (!cin) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            choice = 0;
-            cout << "invalid input." << endl;
-        }
-    }
+    int selection_number = displayAndSelect(flavorArr, priceArr, menu_size);
+    int index = selection_number - 1;
 
-    return choice - 1;
-}
-
-double printReceipt(const string& flavor, double price) {
+    double price = priceArr[index];
     double stateTax = price * 0.06;
     double cityTax = price * 0.015;
+
+    double total = printReceipt(flavorArr[index], price, stateTax, cityTax);
+
+    cout << fixed << setprecision(2);
+    cout << "Returned Total: $" << total << endl;
+
+    return 0;
+}
+
+// Prints shop heading.
+void printHeading() {
+    cout << "--- Rich's Smoothie Shop ---" << endl;
+}
+
+// Displays menu and returns selected menu number.
+int displayAndSelect(string flavorArr[], double priceArr[], int size) {
+    cout << fixed << setprecision(2);
+    cout << "Smoothie Menu" << endl;
+
+    for (int i = 0; i < size; i++) {
+        cout << (i + 1) << ". "
+             << left << setw(12) << flavorArr[i]
+             << "$" << right << setw(6) << priceArr[i] << endl;
+    }
+
+    int selection = 0;
+    cout << "Please Enter Selection Number:" << endl;
+    cin >> selection;
+
+    return selection;
+}
+
+// Prints receipt and returns total amount due.
+double printReceipt(string flavor, double price, double stateTax, double cityTax) {
     double total = price + stateTax + cityTax;
 
     printHeading();
     cout << fixed << setprecision(2);
-    cout << "receipt" << endl;
-    cout << "flavor:    " << flavor << endl;
-    cout << "price:     $" << price << endl;
-    cout << "state tax: $" << stateTax << endl;
-    cout << "city tax:  $" << cityTax << endl;
-    cout << "total:     $" << total << endl;
+    cout << "Receipt" << endl;
+    cout << "Selection: " << flavor << endl;
+    cout << "Price:     $" << price << endl;
+    cout << "State Tax: $" << stateTax << endl;
+    cout << "City Tax:  $" << cityTax << endl;
+    cout << "Total:     $" << total << endl;
+    cout << "Thank you for visiting Rich's Smoothie Shop!" << endl;
 
     return total;
-}
-
-int main() {
-    const int menuSize = 4;
-    string flavors[menuSize] = {"chocolate", "strawberry", "protein", "peach"};
-    double prices[menuSize] = {5.45, 6.99, 8.89, 7.45};
-
-    printHeading();
-    int selected = getSelection(flavors, prices, menuSize);
-    double total = printReceipt(flavors[selected], prices[selected]);
-
-    cout << fixed << setprecision(2);
-    cout << "returned total: $" << total << endl;
-    return 0;
 }
