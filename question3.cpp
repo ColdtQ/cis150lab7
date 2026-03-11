@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <limits>
 #include <string>
 
 using namespace std;
@@ -36,7 +37,7 @@ void printHeading() {
     cout << "--- Rich's Smoothie Shop ---" << endl;
 }
 
-// Displays menu and returns selected menu number.
+// Displays menu and returns a validated menu selection number.
 int displayAndSelect(string flavorArr[], double priceArr[], int size) {
     cout << fixed << setprecision(2);
     cout << "Smoothie Menu" << endl;
@@ -48,10 +49,20 @@ int displayAndSelect(string flavorArr[], double priceArr[], int size) {
     }
 
     int selection = 0;
-    cout << "Please Enter Selection Number:" << endl;
-    cin >> selection;
+    while (true) {
+        cout << "Please Enter Selection Number:" << endl;
+        cin >> selection;
 
-    return selection;
+        if (!cin) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+
+        if (selection >= 1 && selection <= size) {
+            return selection;
+        }
+    }
 }
 
 // Prints receipt and returns total amount due.

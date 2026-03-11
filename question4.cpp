@@ -17,6 +17,9 @@ int main() {
     string thickness = "Normal Thickness";
     string whipped = "No Whipped";
 
+    // Start with the required default smoothie configuration.
+    printConfiguration(flavor, qty, size, thickness, whipped);
+
     int selection = getSelection();
 
     while (selection != 7) {
@@ -44,7 +47,7 @@ void displayMenu() {
 
 // Gets a validated menu selection from 1 to 7.
 int getSelection() {
-    int selection;
+    int selection = 0;
 
     while (true) {
         displayMenu();
@@ -73,7 +76,7 @@ void printConfiguration(string flavor, int qty, string size, string thickness, s
     cout << "Whipped: " << whipped << endl;
 }
 
-// Processes selection with switch statement.
+// Processes a valid selection using a switch statement.
 void processSelection(int selection, string &flavor, int &qty, string &size, string &thickness, string &whipped) {
     switch (selection) {
         case 1:
@@ -86,8 +89,6 @@ void processSelection(int selection, string &flavor, int &qty, string &size, str
         case 3:
             if (qty > 1) {
                 qty = qty - 1;
-            } else {
-                cout << "Warning: quantity cannot go below 1." << endl;
             }
             break;
         case 4:
@@ -102,10 +103,9 @@ void processSelection(int selection, string &flavor, int &qty, string &size, str
         case 7:
             break;
         default:
-            cout << "Invalid option." << endl;
             break;
     }
 
-    // Size is kept as part of the configuration.
+    // This lab version keeps size in the configuration without changing it from the menu.
     (void)size;
 }
