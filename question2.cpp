@@ -1,4 +1,3 @@
-// Trevor Romano - cis150 lab 7
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -7,70 +6,88 @@
 
 using namespace std;
 
-const int maxFlavors = 4;
+// Named constant for maximum number of unique flavors.
+const int max_flavors = 4;
 
-string toLowerWord(string text) {
-    for (int i = 0; i < (int)text.length(); i++) {
-        text[i] = tolower(text[i]);
-    }
-    return text;
-}
-
-int findFlavor(const string flavors[], int used, const string& flavor) {
-    for (int i = 0; i < used; i++) {
-        if (flavors[i] == flavor) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void printResults(const string flavors[], const int votes[], int used) {
-    cout << "--- smoothie shop ---" << endl;
-    cout << "vote results" << endl;
-    cout << left << setw(14) << "flavor" << "votes" << endl;
-    cout << left << setw(14) << "------" << "-----" << endl;
-
-    for (int i = 0; i < used; i++) {
-        cout << left << setw(14) << flavors[i] << votes[i] << endl;
-    }
-}
+// Function prototypes
+void printHeader();
+string toUpperWord(string word);
+int search(const string flavorArr[], int used, string word);
+void display(const string flavorArr[], const int qtyArr[], int used);
 
 int main() {
-    string flavors[maxFlavors];
-    int votes[maxFlavors] = {0};
+    string flavorArr[max_flavors];
+    int qtyArr[max_flavors] = {0};
     int used = 0;
     string line;
     bool done = false;
 
+    printHeader();
+
+    // Read votes until GOBLUE is entered.
     while (!done) {
-        cout << "enter smoothie flavor(s), type x to exit:" << endl;
+        cout << "Enter flavor vote(s) (type GoBlue to finish): " << endl;
         getline(cin, line);
 
         stringstream input(line);
         string flavor;
 
         while (input >> flavor) {
-            flavor = toLowerWord(flavor);
+            flavor = toUpperWord(flavor);
 
-            if (flavor == "x") {
+            if (flavor == "GOBLUE") {
                 done = true;
                 break;
             }
 
-            int index = findFlavor(flavors, used, flavor);
+            int index = search(flavorArr, used, flavor);
             if (index >= 0) {
-                votes[index] = votes[index] + 1;
-            } else if (used < maxFlavors) {
-                flavors[used] = flavor;
-                votes[used] = 1;
+                qtyArr[index] = qtyArr[index] + 1;
+            } else if (used < max_flavors) {
+                flavorArr[used] = flavor;
+                qtyArr[used] = 1;
                 used = used + 1;
             } else {
-                cout << "maximum number of unique flavors reached." << endl;
+                cout << "Error: maximum number of different flavors reached." << endl;
             }
         }
     }
 
-    printResults(flavors, votes, used);
+    display(flavorArr, qtyArr, used);
     return 0;
+}
+
+// Prints shop heading.
+void printHeader() {
+    cout << "--- Rich's Smoothie Shop ---" << endl;
+}
+
+// Converts one word to uppercase.
+string toUpperWord(string word) {
+    for (int i = 0; i < static_cast<int>(word.length()); i++) {
+        word[i] = static_cast<char>(toupper(static_cast<unsigned char>(word[i])));
+    }
+    return word;
+}
+
+// Searches an array for a flavor.
+int search(const string flavorArr[], int used, string word) {
+    for (int i = 0; i < used; i++) {
+        if (flavorArr[i] == word) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Displays final vote report.
+void display(const string flavorArr[], const int qtyArr[], int used) {
+    cout << endl;
+    cout << "Flavor Voting Results" << endl;
+    cout << left << setw(14) << "Flavor" << "Votes" << endl;
+    cout << left << setw(14) << "--------" << "------" << endl;
+
+    for (int i = 0; i < used; i++) {
+        cout << left << setw(14) << flavorArr[i] << qtyArr[i] << endl;
+    }
 }
