@@ -1,119 +1,87 @@
+// Trevor Romano - cis150 lab 7
 #include <iostream>
 #include <string>
 
 using namespace std;
 
-// Displays the smoothie options menu.
-void displayMenu();
+void displayMenu() {
+    cout << "smoothie options:" << endl;
+    cout << "1. change flavor" << endl;
+    cout << "2. add one to quantity" << endl;
+    cout << "3. subtract one from quantity" << endl;
+    cout << "4. set extra thick" << endl;
+    cout << "5. set normal thickness" << endl;
+    cout << "6. add whipped cream" << endl;
+    cout << "7. exit" << endl;
+}
 
-// Displays menu, validates input, and returns a valid selection 1-7.
-int getSelection();
+int getSelection() {
+    int selection = 0;
+    while (selection < 1 || selection > 7) {
+        displayMenu();
+        cout << "enter choice (1-7):" << endl;
+        cin >> selection;
 
-// Prints the current smoothie configuration.
-void printConfiguration(const string &flavor, int quantity, const string &thickness, const string &whipped);
+        if (!cin) {
+            cin.clear();
+            cin.ignore(1000, '\n');
+            selection = 0;
+            cout << "invalid input." << endl;
+        }
+    }
 
-// Processes one menu selection and updates smoothie settings.
-void processSelection(int selection, string &flavor, int &quantity, string &thickness, string &whipped);
+    cin.ignore(1000, '\n');
+    return selection;
+}
+
+void printConfiguration(const string& flavor, int quantity, const string& thickness, const string& whipped) {
+    cout << "\ncurrent smoothie configuration:" << endl;
+    cout << "flavor: " << flavor << endl;
+    cout << "qty: " << quantity << endl;
+    cout << "size: small" << endl;
+    cout << "thickness: " << thickness << endl;
+    cout << "whipped: " << whipped << endl;
+}
+
+void processSelection(int selection, string& flavor, int& quantity, string& thickness, string& whipped) {
+    if (selection == 1) {
+        cout << "enter new flavor:" << endl;
+        getline(cin, flavor);
+        if (flavor == "") {
+            flavor = "raspberry";
+        }
+    } else if (selection == 2) {
+        quantity = quantity + 1;
+    } else if (selection == 3) {
+        if (quantity > 1) {
+            quantity = quantity - 1;
+        } else {
+            cout << "quantity cannot go below 1." << endl;
+        }
+    } else if (selection == 4) {
+        thickness = "extra thick";
+    } else if (selection == 5) {
+        thickness = "normal thickness";
+    } else if (selection == 6) {
+        whipped = "yes";
+    }
+}
 
 int main() {
-    string flavor = "Raspberry";
+    string flavor = "raspberry";
     int quantity = 1;
-    string size = "Small";
-    string thickness = "Normal Thickness";
-    string whipped = "No Whipped";
+    string thickness = "normal thickness";
+    string whipped = "no";
 
     printConfiguration(flavor, quantity, thickness, whipped);
 
     int selection = getSelection();
-
     while (selection != 7) {
         processSelection(selection, flavor, quantity, thickness, whipped);
         printConfiguration(flavor, quantity, thickness, whipped);
         selection = getSelection();
     }
 
-    cout << "Thank you for visiting Rich's Smoothie Kiosk!" << endl;
-    cout << "Final Size: " << size << endl;
-
+    cout << "goodbye." << endl;
     return 0;
-}
-
-void displayMenu() {
-    cout << "Smoothie Options:" << endl;
-    cout << "1. Change the flavor" << endl;
-    cout << "2. Adjust the quantity up by one" << endl;
-    cout << "3. Adjust the quantity down by one" << endl;
-    cout << "4. Extra Thick" << endl;
-    cout << "5. Normal Thickness" << endl;
-    cout << "6. Add Whipped Cream" << endl;
-    cout << "7. Exit" << endl;
-}
-
-int getSelection() {
-    int selection;
-
-    while (true) {
-        displayMenu();
-        cout << "Please Enter your Choice (1-7):" << endl;
-
-        if (!(cin >> selection)) {
-            cin.clear();
-            cin.ignore(1000, '\n');
-            cout << "Invalid selection. Please enter a whole number from 1 to 7." << endl;
-            continue;
-        }
-
-        if (selection >= 1 && selection <= 7) {
-            cin.ignore(1000, '\n');
-            return selection;
-        }
-
-        cout << "Invalid selection. Please enter a number from 1 to 7." << endl;
-    }
-}
-
-void printConfiguration(const string &flavor, int quantity, const string &thickness, const string &whipped) {
-    cout << "\nCurrent Smoothie Configuration:" << endl;
-    cout << "Flavor: " << flavor << endl;
-    cout << "Qty: " << quantity << endl;
-    cout << "Size: Small" << endl;
-    cout << thickness << endl;
-    cout << whipped << endl;
-    cout << endl;
-}
-
-void processSelection(int selection, string &flavor, int &quantity, string &thickness, string &whipped) {
-    switch (selection) {
-        case 1:
-            cout << "Enter new flavor:" << endl;
-            getline(cin, flavor);
-            if (flavor.empty()) {
-                getline(cin, flavor);
-            }
-            break;
-        case 2:
-            quantity++;
-            break;
-        case 3:
-            if (quantity > 1) {
-                quantity--;
-            } else {
-                cout << "Quantity cannot go below 1." << endl;
-            }
-            break;
-        case 4:
-            thickness = "Extra Thick";
-            break;
-        case 5:
-            thickness = "Normal Thickness";
-            break;
-        case 6:
-            whipped = "Yes Whipped";
-            break;
-        case 7:
-            break;
-        default:
-            cout << "Unexpected selection. No changes made." << endl;
-            break;
-    }
 }

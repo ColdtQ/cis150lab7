@@ -1,100 +1,76 @@
+// Trevor Romano - cis150 lab 7
 #include <iostream>
-#include <string>
-#include <sstream>
 #include <iomanip>
+#include <sstream>
+#include <string>
 #include <cctype>
 
 using namespace std;
 
-const int max_flavors = 4;
+const int maxFlavors = 4;
 
-// Prints the smoothie shop header and table headings.
-void printHeader();
+string toLowerWord(string text) {
+    for (int i = 0; i < (int)text.length(); i++) {
+        text[i] = tolower(text[i]);
+    }
+    return text;
+}
 
-// Converts text to uppercase and returns the converted string.
-string toUpperCase(const string &text);
+int findFlavor(const string flavors[], int used, const string& flavor) {
+    for (int i = 0; i < used; i++) {
+        if (flavors[i] == flavor) {
+            return i;
+        }
+    }
+    return -1;
+}
 
-// Returns index of flavor in array or -1 if not found.
-int search(const string flavorArr[], int usedSize, const string &word);
+void printResults(const string flavors[], const int votes[], int used) {
+    cout << "--- smoothie shop ---" << endl;
+    cout << "vote results" << endl;
+    cout << left << setw(14) << "flavor" << "votes" << endl;
+    cout << left << setw(14) << "------" << "-----" << endl;
 
-// Displays all stored flavor votes.
-void display(const string flavorArr[], const int voteArr[], int usedSize);
+    for (int i = 0; i < used; i++) {
+        cout << left << setw(14) << flavors[i] << votes[i] << endl;
+    }
+}
 
 int main() {
-    string flavorArr[max_flavors];
-    int voteArr[max_flavors] = {0};
-    int uniqueCount = 0;
-
+    string flavors[maxFlavors];
+    int votes[maxFlavors] = {0};
+    int used = 0;
     string line;
     bool done = false;
 
     while (!done) {
-        cout << "Enter Smoothie flavor(s) to vote for:" << endl;
+        cout << "enter smoothie flavor(s), type x to exit:" << endl;
         getline(cin, line);
 
         stringstream input(line);
         string flavor;
 
         while (input >> flavor) {
-            flavor = toUpperCase(flavor);
+            flavor = toLowerWord(flavor);
 
-            if (flavor == "GOBLUE") {
+            if (flavor == "x") {
                 done = true;
                 break;
             }
 
-            int foundIndex = search(flavorArr, uniqueCount, flavor);
-
-            if (foundIndex >= 0) {
-                voteArr[foundIndex]++;
+            int index = findFlavor(flavors, used, flavor);
+            if (index >= 0) {
+                votes[index] = votes[index] + 1;
+            } else if (used < maxFlavors) {
+                flavors[used] = flavor;
+                votes[used] = 1;
+                used = used + 1;
             } else {
-                if (uniqueCount < max_flavors) {
-                    flavorArr[uniqueCount] = flavor;
-                    voteArr[uniqueCount] = 1;
-                    uniqueCount++;
-                } else {
-                    cout << "Error: maximum number of different flavors reached." << endl;
-                }
+                cout << "maximum number of unique flavors reached." << endl;
             }
         }
     }
 
-    display(flavorArr, voteArr, uniqueCount);
-
+    printResults(flavors, votes, used);
     return 0;
-}
-
-void printHeader() {
-    cout << "--- Rich's Smoothie Shop ---" << endl;
-    cout << "Flavor Voting Results" << endl;
-    cout << left << setw(14) << "Flavor" << "Votes" << endl;
-    cout << left << setw(14) << "--------" << "------" << endl;
-}
-
-string toUpperCase(const string &text) {
-    string upperText = text;
-
-    for (size_t i = 0; i < upperText.length(); i++) {
-        upperText[i] = static_cast<char>(toupper(static_cast<unsigned char>(upperText[i])));
-    }
-
-    return upperText;
-}
-
-int search(const string flavorArr[], int usedSize, const string &word) {
-    for (int i = 0; i < usedSize; i++) {
-        if (flavorArr[i] == word) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-void display(const string flavorArr[], const int voteArr[], int usedSize) {
-    printHeader();
-
-    for (int i = 0; i < usedSize; i++) {
-        cout << left << setw(14) << flavorArr[i] << voteArr[i] << endl;
-    }
 }
